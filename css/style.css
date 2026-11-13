@@ -579,3 +579,71 @@ a:hover {
         gap: 4rem;
     }
 }
+
+.campo select {
+    width: 100%;
+    padding: 0.7rem 0.8rem;
+    font: inherit;
+    color: var(--tinta);
+    background: var(--papel);
+    border: 2px solid var(--tinta);
+    border-radius: 3px;
+}
+
+.campo select:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px var(--giz);
+}
+
+.btn--contorno {
+    color: var(--tinta);
+    background: transparent;
+    box-shadow: none;
+}
+
+.btn--contorno:hover {
+    color: var(--papel);
+    background: var(--tinta);
+}
+
+.btn--contorno:active {
+    transform: none;
+}
+
+.btn--perigo {
+    color: var(--erro);
+    background: transparent;
+    border-color: var(--erro);
+    box-shadow: none;
+}
+
+.btn--perigo:hover {
+    color: #fff;
+    background: var(--erro);
+}
+
+.btn--perigo:active {
+    transform: none;
+}
+
+.filtros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    align-items: end;
+    margin-bottom: 1.5rem;
+}
+
+.filtros .btn {
+    width: 100%;
+}
+
+.acoes {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.acoes form {
+    margin: 0;
+}

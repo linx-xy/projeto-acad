@@ -20,41 +20,95 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cadastrar_treino'])) 
     $data_treino    = $_POST['data_treino'] ?? date('Y-m-d');
 
     if (!empty($grupo_muscular) && !empty($exercicio) && $series > 0) {
-        $stmt = $pdo->prepare("INSERT INTO treinos (usuario_id, grupo_muscular, exercicio, series, repeticoes, carga_kg, data_treino) 
+        $stmt = $pdo->prepare("INSERT INTO treinos (usuario_id, grupo_muscular, exercicio, series, repeticoes, carga_kg, data_treino)
                                VALUES (:usuario_id, :grupo_muscular, :exercicio, :series, :repeticoes, :carga_kg, :data_treino)");
         $stmt->execute([
             ':usuario_id'     => $usuario_id,
             ':grupo_muscular' => $grupo_muscular,
-            ':exercicio'       => $exercicio,
-            ':series'          => $series,
-            ':repeticoes'      => $repeticoes,
-            ':carga_kg'        => $carga_kg,
-            ':data_treino'     => $data_treino
+            ':exercicio'      => $exercicio,
+            ':series'         => $series,
+            ':repeticoes'     => $repeticoes,
+            ':carga_kg'       => $carga_kg,
+            ':data_treino'    => $data_treino
         ]);
         header("Location: painel.php?salvo=1");
         exit;
     }
 }
 
-if (isset($_GET['salvo'])) {
-    $mensagem = "Treino registrado com sucesso!";
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['excluir_treino'])) {
+    $id = (int)($_POST['id'] ?? 0);
+    $stmt = $pdo->prepare("DELETE FROM treinos WHERE id = :id AND usuario_id = :usuario_id");
+    $stmt->execute([':id' => $id, ':usuario_id' => $usuario_id]);
+    header("Location: painel.php?excluido=1");
+    exit;
 }
 
-$stmt = $pdo->prepare("SELECT t.*, u.nome AS nome_usuario 
-                       FROM treinos t 
-                       INNER JOIN usuarios u ON t.usuario_id = u.id 
-                       WHERE t.usuario_id = :usuario_id 
-                       ORDER BY t.data_treino DESC");
-$stmt->execute([':usuario_id' => $usuario_id]);
+if (isset($_GET['salvo'])) {
+    $mensagem = "Treino registrado com sucesso!";
+} elseif (isset($_GET['atualizado'])) {
+    $mensagem = "Treino atualizado com sucesso!";
+} elseif (isset($_GET['excluido'])) {
+    $mensagem = "Treino excluído.";
+}
+
+$filtroGrupo = trim($_GET['grupo'] ?? '');
+$filtroDe    = $_GET['de'] ?? '';
+$filtroAte   = $_GET['ate'] ?? '';
+
+if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $filtroDe) !== 1) {
+    $filtroDe = '';
+}
+if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $filtroAte) !== 1) {
+    $filtroAte = '';
+}
+
+$filtrando = ($filtroGrupo !== '' || $filtroDe !== '' || $filtroAte !== '');
+
+$sql = "SELECT t.*, u.nome AS nome_usuario
+        FROM treinos t
+        INNER JOIN usuarios u ON t.usuario_id = u.id
+        WHERE t.usuario_id = :usuario_id";
+$params = [':usuario_id' => $usuario_id];
+
+if ($filtroGrupo !== '') {
+    $sql .= " AND t.grupo_muscular = :grupo";
+    $params[':grupo'] = $filtroGrupo;
+}
+if ($filtroDe !== '') {
+    $sql .= " AND t.data_treino >= :de";
+    $params[':de'] = $filtroDe;
+}
+if ($filtroAte !== '') {
+    $sql .= " AND t.data_treino <= :ate";
+    $params[':ate'] = $filtroAte;
+}
+$sql .= " ORDER BY t.data_treino DESC, t.id DESC";
+
+$stmt = $pdo->prepare($sql);
+$stmt->execute($params);
 $treinos = $stmt->fetchAll();
-
 $totalTreinos = count($treinos);
-$maiorCarga   = $totalTreinos ? max(array_column($treinos, 'carga_kg')) : 0;
-$ultimoTreino = $totalTreinos ? date('d/m/Y', strtotime($treinos[0]['data_treino'])) : '—';
 
-$diasComTreino = array_flip(array_column($treinos, 'data_treino'));
+$stmt = $pdo->prepare("SELECT DISTINCT grupo_muscular FROM treinos WHERE usuario_id = :usuario_id ORDER BY grupo_muscular");
+$stmt->execute([':usuario_id' => $usuario_id]);
+$grupos = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+$stmt = $pdo->prepare("SELECT COUNT(*) AS total, MAX(carga_kg) AS maior, MAX(data_treino) AS ultimo FROM treinos WHERE usuario_id = :usuario_id");
+$stmt->execute([':usuario_id' => $usuario_id]);
+$resumo = $stmt->fetch();
+
+$totalGeral   = (int)$resumo['total'];
+$maiorCarga   = $resumo['maior'] ?? 0;
+$ultimoTreino = $resumo['ultimo'] ? date('d/m/Y', strtotime($resumo['ultimo'])) : '—';
+
 $hoje   = new DateTime('today');
 $inicio = (clone $hoje)->modify('monday this week')->modify('-3 weeks');
+
+$stmt = $pdo->prepare("SELECT DISTINCT data_treino FROM treinos WHERE usuario_id = :usuario_id AND data_treino >= :inicio");
+$stmt->execute([':usuario_id' => $usuario_id, ':inicio' => $inicio->format('Y-m-d')]);
+$diasComTreino = array_flip($stmt->fetchAll(PDO::FETCH_COLUMN));
+
 $dias = [];
 $diasTreinados = 0;
 for ($i = 0; $i < 28; $i++) {
@@ -95,11 +149,11 @@ for ($i = 0; $i < 28; $i++) {
         <div class="pagina__topo">
         <div class="pagina__titulo">
             <h1>Olá, <?= htmlspecialchars($_SESSION['usuario_nome']) ?>.</h1>
-            <?php if ($totalTreinos === 0): ?>
+            <?php if ($totalGeral === 0): ?>
                 <p>Você ainda não registrou nenhum treino. Preencha a ficha abaixo para começar.</p>
             <?php else: ?>
                 <p>
-                    <strong><?= $totalTreinos ?></strong> <?= $totalTreinos === 1 ? 'treino registrado' : 'treinos registrados' ?>.
+                    <strong><?= $totalGeral ?></strong> <?= $totalGeral === 1 ? 'treino registrado' : 'treinos registrados' ?>.
                     Sua maior carga é <strong><?= htmlspecialchars((string)$maiorCarga) ?> kg</strong>
                     e o último treino foi em <strong><?= htmlspecialchars($ultimoTreino) ?></strong>.
                 </p>
@@ -173,8 +227,36 @@ for ($i = 0; $i < 28; $i++) {
                 <span><?= $totalTreinos ?> <?= $totalTreinos === 1 ? 'registro' : 'registros' ?></span>
             </div>
 
+            <form class="filtros" action="painel.php" method="GET">
+                <div class="campo">
+                    <label for="filtro_grupo">Grupo muscular</label>
+                    <select id="filtro_grupo" name="grupo">
+                        <option value="">Todos</option>
+                        <?php foreach ($grupos as $g): ?>
+                        <option value="<?= htmlspecialchars($g) ?>"<?= $g === $filtroGrupo ? ' selected' : '' ?>><?= htmlspecialchars($g) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="filtro_de">De</label>
+                    <input type="date" id="filtro_de" name="de" value="<?= htmlspecialchars($filtroDe) ?>">
+                </div>
+
+                <div class="campo">
+                    <label for="filtro_ate">Até</label>
+                    <input type="date" id="filtro_ate" name="ate" value="<?= htmlspecialchars($filtroAte) ?>">
+                </div>
+
+                <button class="btn" type="submit">Filtrar</button>
+
+                <?php if ($filtrando): ?>
+                    <a class="btn btn--contorno" href="painel.php">Limpar filtros</a>
+                <?php endif; ?>
+            </form>
+
             <?php if ($totalTreinos === 0): ?>
-                <p class="vazio">Nenhum treino por aqui ainda.</p>
+                <p class="vazio"><?= $filtrando ? 'Nenhum treino encontrado com esses filtros.' : 'Nenhum treino por aqui ainda.' ?></p>
             <?php else: ?>
                 <div class="tabela-wrap">
                     <table class="tabela">
@@ -186,6 +268,7 @@ for ($i = 0; $i < 28; $i++) {
                                 <th scope="col">Exercício</th>
                                 <th scope="col">Séries × reps</th>
                                 <th scope="col" class="num">Carga</th>
+                                <th scope="col">Ações</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -198,6 +281,16 @@ for ($i = 0; $i < 28; $i++) {
                                 <td data-label="Exercício"><?= htmlspecialchars($t['exercicio']) ?></td>
                                 <td data-label="Séries × reps"><?= (int)$t['series'] ?> × <?= (int)$t['repeticoes'] ?></td>
                                 <td data-label="Carga" class="num carga"><?= htmlspecialchars((string)$t['carga_kg']) ?> <small>kg</small></td>
+                                <td data-label="Ações">
+                                    <div class="acoes">
+                                        <a class="btn btn--contorno btn--pequeno" href="editar.php?id=<?= (int)$t['id'] ?>">Editar</a>
+                                        <form action="painel.php" method="POST" onsubmit="return confirm('Excluir este treino?');">
+                                            <input type="hidden" name="excluir_treino" value="1">
+                                            <input type="hidden" name="id" value="<?= (int)$t['id'] ?>">
+                                            <button class="btn btn--perigo btn--pequeno" type="submit">Excluir</button>
+                                        </form>
+                                    </div>
+                                </td>
                             </tr>
                             <?php endforeach; ?>
                         </tbody>
