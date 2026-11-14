@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 540" role="img" aria-label="Diagrama entidade-relacionamento do banco acad_db">
+<rect width="900" height="540" fill="#f5f5f1"/>
+<text x="50" y="42" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="22" font-weight="700" fill="#16181b">DER do Projeto Acad (banco acad_db)</text>
+<rect x="50" y="70" width="300" height="224" rx="4" fill="#fbfbf9" stroke="#16181b" stroke-width="2.5"/>
+<rect x="50" y="70" width="300" height="44" rx="4" fill="#f5c400" stroke="#16181b" stroke-width="2.5"/>
+<text x="66" y="99" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="19" font-weight="700" fill="#16181b">usuarios</text>
+<text x="66" y="137" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="700" fill="#16181b">id</text>
+<text x="200" y="137" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">INT</text>
+<rect x="300" y="122" width="34" height="20" rx="3" fill="#f5c400"/>
+<text x="317" y="136" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#16181b">PK</text>
+<line x1="50" y1="150" x2="350" y2="150" stroke="#b4b5af"/>
+<text x="66" y="173" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">nome</text>
+<text x="200" y="173" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">VARCHAR(100)</text>
+<line x1="50" y1="186" x2="350" y2="186" stroke="#b4b5af"/>
+<text x="66" y="209" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">email</text>
+<text x="200" y="209" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">VARCHAR(100)</text>
+<rect x="300" y="194" width="34" height="20" rx="3" fill="#555a62"/>
+<text x="317" y="208" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#fff">UK</text>
+<line x1="50" y1="222" x2="350" y2="222" stroke="#b4b5af"/>
+<text x="66" y="245" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">senha</text>
+<text x="200" y="245" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">VARCHAR(255)</text>
+<line x1="50" y1="258" x2="350" y2="258" stroke="#b4b5af"/>
+<text x="66" y="281" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">criado_em</text>
+<text x="200" y="281" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">TIMESTAMP</text>
+<rect x="550" y="70" width="300" height="368" rx="4" fill="#fbfbf9" stroke="#16181b" stroke-width="2.5"/>
+<rect x="550" y="70" width="300" height="44" rx="4" fill="#f5c400" stroke="#16181b" stroke-width="2.5"/>
+<text x="566" y="99" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="19" font-weight="700" fill="#16181b">treinos</text>
+<text x="566" y="137" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="700" fill="#16181b">id</text>
+<text x="700" y="137" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">INT</text>
+<rect x="800" y="122" width="34" height="20" rx="3" fill="#f5c400"/>
+<text x="817" y="136" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#16181b">PK</text>
+<line x1="550" y1="150" x2="850" y2="150" stroke="#b4b5af"/>
+<text x="566" y="173" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="700" fill="#16181b">usuario_id</text>
+<text x="700" y="173" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">INT</text>
+<rect x="800" y="158" width="34" height="20" rx="3" fill="#1b5fa8"/>
+<text x="817" y="172" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#fff">FK</text>
+<line x1="550" y1="186" x2="850" y2="186" stroke="#b4b5af"/>
+<text x="566" y="209" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">grupo_muscular</text>
+<text x="700" y="209" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">VARCHAR(50)</text>
+<line x1="550" y1="222" x2="850" y2="222" stroke="#b4b5af"/>
+<text x="566" y="245" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">exercicio</text>
+<text x="700" y="245" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">VARCHAR(100)</text>
+<line x1="550" y1="258" x2="850" y2="258" stroke="#b4b5af"/>
+<text x="566" y="281" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">series</text>
+<text x="700" y="281" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">INT</text>
+<line x1="550" y1="294" x2="850" y2="294" stroke="#b4b5af"/>
+<text x="566" y="317" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">repeticoes</text>
+<text x="700" y="317" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">INT</text>
+<line x1="550" y1="330" x2="850" y2="330" stroke="#b4b5af"/>
+<text x="566" y="353" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">carga_kg</text>
+<text x="700" y="353" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">DECIMAL(5,2)</text>
+<line x1="550" y1="366" x2="850" y2="366" stroke="#b4b5af"/>
+<text x="566" y="389" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">data_treino</text>
+<text x="700" y="389" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">DATE</text>
+<line x1="550" y1="402" x2="850" y2="402" stroke="#b4b5af"/>
+<text x="566" y="425" font-family="Consolas, Menlo, monospace" font-size="15" font-weight="400" fill="#16181b">criado_em</text>
+<text x="700" y="425" font-family="Consolas, Menlo, monospace" font-size="13" fill="#555a62">TIMESTAMP</text>
+<path d="M350 132 H450 V168 H550" fill="none" stroke="#16181b" stroke-width="2.5"/>
+<line x1="368" y1="122" x2="368" y2="142" stroke="#16181b" stroke-width="2.5"/>
+<text x="360" y="118" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181b">1</text>
+<line x1="526" y1="168" x2="550" y2="152" stroke="#16181b" stroke-width="2.5"/>
+<line x1="526" y1="168" x2="550" y2="168" stroke="#16181b" stroke-width="2.5"/>
+<line x1="526" y1="168" x2="550" y2="184" stroke="#16181b" stroke-width="2.5"/>
+<line x1="514" y1="158" x2="514" y2="178" stroke="#16181b" stroke-width="2.5"/>
+<text x="512" y="154" text-anchor="end" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" font-weight="700" fill="#16181b">N</text>
+<text x="462" y="155" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="15" font-style="italic" fill="#16181b">possui</text>
+<text x="50" y="466" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" fill="#16181b">Um usuário possui vários treinos (1:N). Ao excluir um usuário, os treinos dele também são excluídos (ON DELETE CASCADE).</text>
+<rect x="50" y="500" width="34" height="20" rx="3" fill="#f5c400"/><text x="67" y="514" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#16181b">PK</text>
+<text x="92" y="515" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" fill="#16181b">chave primária</text>
+<rect x="220" y="500" width="34" height="20" rx="3" fill="#1b5fa8"/><text x="237" y="514" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#fff">FK</text>
+<text x="262" y="515" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" fill="#16181b">chave estrangeira</text>
+<rect x="400" y="500" width="34" height="20" rx="3" fill="#555a62"/><text x="417" y="514" text-anchor="middle" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="12" font-weight="700" fill="#fff">UK</text>
+<text x="442" y="515" font-family="Segoe UI, system-ui, Arial, sans-serif" font-size="14" fill="#16181b">valor único</text>
+</svg>
